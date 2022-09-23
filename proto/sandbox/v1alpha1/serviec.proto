@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package sandbox.v1alpha1;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "auth service";
+    version: "1.0";
+  };
+  schemes: HTTP;
+  consumes: "application/json";
+  produces: "application/json";
+  responses: {
+    key: "404";
+    value: {
+      description: "Returned when the resource does not exist.";
+      schema: {
+        json_schema: {
+          type: STRING;
+        }
+      }
+    }
+  }
+};
+
+message User {
+  string name = 1;
+  string email_id = 2;
+  string password = 3;
+  string mobile_number = 4;
+}
+
+message RegisterUserRequest {
+  User user = 2;
+}
+message RegisterUserResponse {
+  string message = 1;
+}
+
+message LoginUserRequest {
+  string email_id = 1;
+  string password = 2;
+}
+message LoginUserResponse {
+  string message = 1;
+  string status = 2;
+}
+
+service AuthService {
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/register"
+      body: "*"
+    };
+  }
+
+  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/login"
+      body: "*"
+    };
+  }
+}

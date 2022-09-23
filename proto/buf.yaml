@@ -1,0 +1,17 @@
+version: v1
+name: buf.build/sajanjswl/sanbox
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway
+
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - DEFAULT
+
+
+
+
+
