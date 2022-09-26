@@ -1,12 +1,20 @@
 package main
 
 import (
+	"context"
 	"flag"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/sajanjswl/sandbox-service/config"
+	"github.com/sajanjswl/sandbox-service/models"
+	"github.com/sajanjswl/sandbox-service/pkg/protocol/grpc"
+
+	"github.com/sajanjswl/sandbox-service/pkg/protocol/rest"
+	"github.com/sajanjswl/sandbox-service/pkg/service/v1alpha1"
 	"go.uber.org/zap"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 const service string = "sandbox-service"
@@ -36,18 +44,33 @@ func main() {
 	logger, _ := zap.NewProduction()
 	defer logger.Sync()
 
-	// db := database.InitDb(logger, cfg)
-	// db.AutoMigrate(&models.User{})
+	db := InitDb(logger, cfg)
+	db.AutoMigrate(&models.User{})
 
-	// ctx := context.Background()
-	// grpcAuthServerApi := grpcv1.NewAuthServiceServer(db, logger, cfg)
-	// // //passing DB connection to Rest
-	// restAuthServerApi := restv1.NewRestServer(db, cfg, logger)
+	ctx := context.Background()
 
-	// // // // run HTTP gateway
-	// go func() {
-	// 	_ = rest.RunServer(ctx, restAuthServerApi, cfg, logger)
-	// }()
-	// grpc.RunServer(ctx, grpcAuthServerApi, cfg, logger)
+	grpcAuthServerApi := v1alpha1.NewAuthServiceServer(db, logger, cfg)
+	//passing DB connection to Rest
+	restAuthServerApi := rest.NewRestServer(db, cfg, logger)
 
+	// // run HTTP gateway
+	go func() {
+		_ = rest.RunServer(ctx, restAuthServerApi)
+	}()
+	grpc.RunServer(ctx, grpcAuthServerApi, cfg, logger)
+
+}
+
+func InitDb(logger *zap.Logger, cfg *config.Config) *gorm.DB {
+	var err error
+	dns := cfg.DBUserName + ":" + cfg.DBPassword + "@tcp" + "(" + cfg.DBHost + ":" + cfg.DBPort + ")/" + cfg.DBName + "?" + "charset=utf8mb4&parseTime=True&loc=Local"
+	logger.Info("dns config", zap.String("dns", dns))
+	db, err := gorm.Open(mysql.Open(dns), &gorm.Config{})
+
+	if err != nil {
+		logger.Fatal("error connecting to database", zap.Error(err))
+		return nil
+	}
+
+	return db
 }
