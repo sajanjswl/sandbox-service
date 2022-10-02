@@ -40,7 +40,7 @@ func RunServer(ctx context.Context, restServer *RestServer) error {
 	rmux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 
-	if err := v1.RegisterAuthServiceHandlerFromEndpoint(ctx, rmux, restServer.cfg.GRPCHost+":"+restServer.cfg.GRPCPort, opts); err != nil {
+	if err := v1.RegisterSandboxServiceHandlerFromEndpoint(ctx, rmux, restServer.cfg.GRPCHost+":"+restServer.cfg.GRPCPort, opts); err != nil {
 
 		restServer.logger.Error("failed to start gRPC-Rest gatewy", zap.Error(err))
 		return err
@@ -48,9 +48,6 @@ func RunServer(ctx context.Context, restServer *RestServer) error {
 
 	restServer.Mux = http.NewServeMux()
 	restServer.Mux.Handle("/", rmux)
-
-	// calling handler
-	// restServer.InitialRoutes()
 
 	srv := &http.Server{
 		Addr:    ":" + restServer.cfg.RESTPort,

@@ -5,6 +5,8 @@ import (
 	"errors"
 
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 
 	"github.com/sajanjswl/sandbox-service/config"
@@ -12,27 +14,25 @@ import (
 	"github.com/sajanjswl/sandbox-service/models"
 
 	"go.uber.org/zap"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
-type authServiceServer struct {
+type sandboxServiceServer struct {
 	db     *gorm.DB
 	logger *zap.Logger
-	// v1.UnimplementedAuthServiceServer
+	// v1.UnimplementedsandboxServiceServer
 	config *config.Config
 }
 
 // register db wiht server
-func NewAuthServiceServer(db *gorm.DB, logger *zap.Logger, cfg *config.Config) v1.AuthServiceServer {
-	return &authServiceServer{
+func NewSandboxServiceServer(db *gorm.DB, logger *zap.Logger, cfg *config.Config) v1.SandboxServiceServer {
+	return &sandboxServiceServer{
 		db:     db,
 		logger: logger,
 		config: cfg,
 	}
 }
 
-func (s *authServiceServer) LoginUser(ctx context.Context, req *v1.LoginUserRequest) (*v1.LoginUserResponse, error) {
+func (s *sandboxServiceServer) LoginUser(ctx context.Context, req *v1.LoginUserRequest) (*v1.LoginUserResponse, error) {
 
 	user := &models.User{}
 	if err := models.GetUser(s.db, user, req.GetEmailId()); err != nil {
@@ -54,7 +54,7 @@ func (s *authServiceServer) LoginUser(ctx context.Context, req *v1.LoginUserRequ
 
 }
 
-func (s *authServiceServer) RegisterUser(ctx context.Context, req *v1.RegisterUserRequest) (*v1.RegisterUserResponse, error) {
+func (s *sandboxServiceServer) RegisterUser(ctx context.Context, req *v1.RegisterUserRequest) (*v1.RegisterUserResponse, error) {
 
 	user := &models.User{}
 	if err := models.GetUser(s.db, user, req.GetUser().EmailId); err == nil {

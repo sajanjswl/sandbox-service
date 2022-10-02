@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func RunServer(ctx context.Context, authServiceServerApi v1.AuthServiceServer, cfg *config.Config, logger *zap.Logger) error {
+func RunServer(ctx context.Context, authServiceServerApi v1.SandboxServiceServer, cfg *config.Config, logger *zap.Logger) error {
 
 	listen, err := net.Listen(cfg.GRPCNetworkType, ":"+cfg.GRPCPort)
 	logger.Info("gRPC auth sevice would listen on", zap.String("network-type", cfg.GRPCNetworkType), zap.String("port", cfg.GRPCPort))
@@ -24,7 +24,7 @@ func RunServer(ctx context.Context, authServiceServerApi v1.AuthServiceServer, c
 
 	// register authServiceServerApi with grpc-server
 	server := grpc.NewServer()
-	v1.RegisterAuthServiceServer(server, authServiceServerApi)
+	v1.RegisterSandboxServiceServer(server, authServiceServerApi)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)

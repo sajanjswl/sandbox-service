@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "auth service",
+    "title": "sandbox service",
     "version": "1.0"
   },
   "tags": [
     {
-      "name": "AuthService"
+      "name": "SandboxService"
     }
   ],
   "schemes": [
@@ -21,7 +21,7 @@
   "paths": {
     "/v1/login": {
       "post": {
-        "operationId": "AuthService_LoginUser",
+        "operationId": "SandboxService_LoginUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -54,13 +54,13 @@
           }
         ],
         "tags": [
-          "AuthService"
+          "SandboxService"
         ]
       }
     },
     "/v1/register": {
       "post": {
-        "operationId": "AuthService_RegisterUser",
+        "operationId": "SandboxService_RegisterUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -93,7 +93,7 @@
           }
         ],
         "tags": [
-          "AuthService"
+          "SandboxService"
         ]
       }
     }

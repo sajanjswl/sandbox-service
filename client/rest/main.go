@@ -24,8 +24,7 @@ func login(address *string) {
 
 	resp, err := http.Post(*address+"/v1/login", "application/json", strings.NewReader(fmt.Sprintf(`
 		{
-			"apiVersion":"v1",
-			"emailID": "sjnjaiswal3@gmail.com",
+			"emailId": "sjnjaiswal@gmail.com",
 			"password":"password1"
 		}
 	`)))

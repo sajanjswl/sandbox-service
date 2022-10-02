@@ -3,15 +3,12 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"time"
 
-	v1 "github.com/sajanjswl/sandbox-service/gen/go/sandbox/v1alpha1"
+	v1alpha1 "github.com/sajanjswl/sandbox-service/gen/go/sandbox/v1alpha1"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
-
-const apiVersion = "v1"
 
 func main() {
 
@@ -24,28 +21,25 @@ func main() {
 	}
 	defer conn.Close()
 
-	c := v1.NewAuthServiceClient(conn)
+	c := v1alpha1.NewSandboxServiceClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	register(c, ctx)
+	// register(c, ctx)
 
-	// login(c, ctx)
-
-	// update(c, ctx)
+	login(c, ctx)
 
 }
 
-func register(c v1.AuthServiceClient, ctx context.Context) {
+func register(c v1alpha1.SandboxServiceClient, ctx context.Context) {
 
-	fmt.Println("I  was here")
-	req := &v1.RegisterUserRequest{
-		User: &v1.User{
-			EmailId:      "sjnjaiswal3@gmail.com",
+	req := &v1alpha1.RegisterUserRequest{
+		User: &v1alpha1.User{
+			EmailId:      "sjnjaiswal@gmail.com",
 			Password:     "password1",
 			Name:         "Sajan",
-			MobileNumber: "+917064274923",
+			MobileNumber: "+91 789076552",
 		},
 	}
 
@@ -58,9 +52,9 @@ func register(c v1.AuthServiceClient, ctx context.Context) {
 
 }
 
-func login(c v1.AuthServiceClient, ctx context.Context) {
+func login(c v1alpha1.SandboxServiceClient, ctx context.Context) {
 
-	req1 := &v1.LoginUserRequest{
+	req1 := &v1alpha1.LoginUserRequest{
 		EmailId:  "sjnjaiswal@gmail.com",
 		Password: "password1",
 	}

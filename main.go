@@ -49,15 +49,15 @@ func main() {
 
 	ctx := context.Background()
 
-	grpcAuthServerApi := v1alpha1.NewAuthServiceServer(db, logger, cfg)
+	grpcSandboxServerApi := v1alpha1.NewSandboxServiceServer(db, logger, cfg)
 	//passing DB connection to Rest
-	restAuthServerApi := rest.NewRestServer(db, cfg, logger)
+	restSandboxServerApi := rest.NewRestServer(db, cfg, logger)
 
 	// // run HTTP gateway
 	go func() {
-		_ = rest.RunServer(ctx, restAuthServerApi)
+		_ = rest.RunServer(ctx, restSandboxServerApi)
 	}()
-	grpc.RunServer(ctx, grpcAuthServerApi, cfg, logger)
+	grpc.RunServer(ctx, grpcSandboxServerApi, cfg, logger)
 
 }
 
